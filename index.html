@@ -1,0 +1,81 @@
+To create a simple calculator and set up a GitHub Action to handle a "build" process (even for a simple app), you’ll need these two files in a GitHub repository.
+This setup uses GitHub Actions to automate tasks, which is the standard way to handle build.yaml files in that environment.
+1. index.html
+This file contains the structure, styling, and logic for your calculator. It's designed to be responsive and functional immediately upon opening.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calc</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f9; }
+        .calc { background: #333; padding: 20px; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        display { width: 100%; height: 50px; background: #eee; display: block; margin-bottom: 10px; text-align: right; line-height: 50px; font-size: 1.5rem; padding: 0 10px; box-sizing: border-box; border-radius: 5px; }
+        .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        button { padding: 20px; font-size: 1.2rem; border: none; border-radius: 5px; cursor: pointer; background: #555; color: white; }
+        button:hover { background: #777; }
+        .op { background: #f39c12; }
+        .eq { background: #27ae60; grid-column: span 2; }
+    </style>
+</head>
+<body>
+    <div class="calc">
+        <display id="res">0</display>
+        <div class="buttons">
+            <button onclick="clearRes()">C</button>
+            <button onclick="add('/')" class="op">/</button>
+            <button onclick="add('*')" class="op">×</button>
+            <button onclick="add('-')" class="op">-</button>
+            <button onclick="add('7')">7</button>
+            <button onclick="add('8')">8</button>
+            <button onclick="add('9')">9</button>
+            <button onclick="add('+')" class="op">+</button>
+            <button onclick="add('4')">4</button>
+            <button onclick="add('5')">5</button>
+            <button onclick="add('6')">6</button>
+            <button onclick="add('1')">1</button>
+            <button onclick="add('2')">2</button>
+            <button onclick="add('3')">3</button>
+            <button onclick="calc()" class="eq">=</button>
+            <button onclick="add('0')" style="grid-column: span 2;">0</button>
+        </div>
+    </div>
+    <script>
+        let d = document.getElementById('res');
+        function add(v) { if(d.innerText === '0') d.innerText = v; else d.innerText += v; }
+        function clearRes() { d.innerText = '0'; }
+        function calc() { try { d.innerText = eval(d.innerText); } catch { d.innerText = "Error"; } }
+    </script>
+</body>
+</html>
+
+2. .github/workflows/build.yaml
+In GitHub, your automation files must live in a specific folder: .github/workflows/. This script tells GitHub to "build" or deploy your app (in this case, it simply acknowledges the code is pushed).
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Build Script
+        run: |
+          echo "Building the Calculator App..."
+          mkdir -p dist
+          cp index.html dist/
+          echo "Build complete. Files are in the dist folder."
+
+How to use this:
+ * Create a new Repository on GitHub.
+ * Upload index.html to the main folder.
+ * Create a folder named .github, then a folder inside it named workflows.
+ * Upload build.yaml inside that workflows folder.
+Every time you "Push" a change to your code, GitHub will automatically run the "Build" job.
+Would you like me to help you set up GitHub Pages so you can actually open this calculator as a live website?
